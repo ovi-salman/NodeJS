@@ -15,7 +15,7 @@
     var form = {user:"", email:""};
   	$('#submit').click(function(){
     	form.user = $('#user').val();
-    	form.email = $('email').val();
+    	form.email = $('#email').val();
     	
 $.ajax({
     	method: "POST",
