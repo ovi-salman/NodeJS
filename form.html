@@ -1,0 +1,39 @@
+<html>
+    <head>
+         <title>Simple node server</title>
+        
+    </head>
+        <body>
+            <p>User name:</p>
+  	        <input type="text" id="user"/><br/><br/>
+  	         <p>Email:</p>
+  	        <input type="text" id="email"/><br/><br/>
+  	        <button id="submit">Submit</button>
+  	        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+     
+    var form = {user:"", email:""};
+  	$('#submit').click(function(){
+    	form.user = $('#user').val();
+    	form.email = $('email').val();
+    	
+$.ajax({
+    	method: "POST",
+    	url: "/submit_user",
+        data: form
+}).done(function(response){
+console.log(response);
+}).fail(function(response){
+console.log(response);
+});
+});
+                                                                                 
+</script>
+            
+            
+            
+        </body>
+        
+   
+    
+</html>
