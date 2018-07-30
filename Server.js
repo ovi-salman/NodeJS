@@ -13,8 +13,37 @@ var mongo = require("mongodb");
 //for c9
 var db,uri = "mongodb://"+process.env.IP+":27017";
 
+var mongoose = require("mongoose");
+mongoose.connect("mongodb://"+process.env.IP+":27017/node-cw8");
 
-mongo.MongoClient.connect(uri,{userNewUrlParser:true},function (err,clint )
+mongoose.connection.on('error',function(){
+  console.log('Could not connect to mongodb');
+})
+
+
+var Schema = mongoose.Schema;
+
+var userSchema = new Schema({  
+    user: {
+        type: String,
+        trim: true,
+        default: '',
+        required: 'Name required'
+      },
+
+    email: {
+        type: String,
+        trim: true,
+        unique: 'Email already exists',
+        match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+        required: 'Email required'
+    },
+   
+});
+
+var User = mongoose.model('User',userSchema);
+
+/*mongo.MongoClient.connect(uri,{userNewUrlParser:true},function (err,clint )
 {if(err)
 {
   console.log("Could not connect to mongo db")
@@ -31,7 +60,10 @@ var save = function(form_data)
   });
   var collection = db.collection('users');
   collection.save(form_data);
-}
+}*/
+
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -51,8 +83,15 @@ app.get('/form', function(req,res){
 });
 app.post('/submit_user', function(req,res){
  console.log(req.body);
- save(req.body);
- res.status(200);
+ var new_user = new User(req.body);
+ new_user.save(function(err, data){
+   if(err){
+     return res.status(400).json({message: "Could not save user"})
+   }
+   res.status(200).json(data);
+ })
+ //save(req.body);
+ //res.status(200);
   
 });
   server.listen(process.env.PORT, process.env.IP, function(){
